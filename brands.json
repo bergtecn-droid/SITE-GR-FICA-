@@ -1,0 +1,152 @@
+{
+ "sushi": {
+  "name": "koi sushi.",
+  "label": "CARDÁPIO DIGITAL · COZINHA JAPONESA",
+  "title": "Um ritual de sabor.",
+  "subtitle": "Conheça uma experiência japonesa feita para despertar os sentidos. Elegância em cada detalhe.",
+  "accent": "#f09b77",
+  "items": [
+   [
+    "Combinado Koi 20 peças",
+    79.9,
+    "Uma seleção especial de sushis e sashimis."
+   ],
+   [
+    "Salmão Especial",
+    35.9,
+    "Peças de salmão com finalização delicada."
+   ],
+   [
+    "Hot Roll Crocante",
+    29.9,
+    "Uma combinação clássica e irresistível."
+   ]
+  ],
+  "photo": "img/sushi.jpg"
+ },
+ "acai": {
+  "name": "nativo açaí.",
+  "label": "CARDÁPIO DIGITAL · AÇAÍTERIA",
+  "title": "O sabor da nossa terra.",
+  "subtitle": "Energia, frescor e ingredientes que traduzem a essência do Pará.",
+  "accent": "#df9cec",
+  "items": [
+   [
+    "Açaí Tradicional 500ml",
+    19.9,
+    "Açaí cremoso do jeitinho que você gosta."
+   ],
+   [
+    "Açaí Tropical",
+    25.9,
+    "Banana, morango e granola."
+   ],
+   [
+    "Nativo Especial",
+    29.9,
+    "Nossa combinação de frutas e crocância."
+   ]
+  ],
+  "photo": "img/acai.jpg"
+ },
+ "burger": {
+  "name": "BRASA.",
+  "label": "CARDÁPIO DIGITAL · HAMBURGUERIA",
+  "title": "Feito pra dar água na boca.",
+  "subtitle": "Smash, queijo derretido e um visual à altura de cada mordida.",
+  "accent": "#ffc46a",
+  "items": [
+   [
+    "Brasa Bacon",
+    33.9,
+    "Hambúrguer artesanal, cheddar e bacon."
+   ],
+   [
+    "Duplo Brasa",
+    38.9,
+    "Dois discos de carne e queijo especial."
+   ],
+   [
+    "Batata Crocante",
+    16.9,
+    "Porção especial de batatas."
+   ]
+  ],
+  "photo": "img/burger.jpg"
+ },
+ "pizza": {
+  "name": "forno 51.",
+  "label": "CARDÁPIO DIGITAL · PIZZARIA",
+  "title": "Toda paixão tem um sabor.",
+  "subtitle": "Massa artesanal, forno quente e receitas para reunir quem você gosta.",
+  "accent": "#e6b18d",
+  "items": [
+   [
+    "Margherita Artesanal",
+    49.9,
+    "Molho de tomate, mozzarella e manjericão."
+   ],
+   [
+    "Quatro Queijos",
+    59.9,
+    "Uma seleção especial de queijos."
+   ],
+   [
+    "Pizza da Casa",
+    64.9,
+    "A favorita de quem ama sabor."
+   ]
+  ],
+  "photo": "img/pizza.jpg"
+ },
+ "cafe": {
+  "name": "aurora café.",
+  "label": "SITE INSTITUCIONAL · CAFETERIA",
+  "title": "A pausa mais gostosa do dia.",
+  "subtitle": "Um espaço acolhedor, cafés especiais e uma apresentação com personalidade.",
+  "accent": "#d7d3a1",
+  "items": [
+   [
+    "Cappuccino da Casa",
+    15.9,
+    "Café com leite cremoso e espuma aveludada."
+   ],
+   [
+    "Croissant de Manteiga",
+    13.9,
+    "Folhado crocante e fresquinho."
+   ],
+   [
+    "Fatia de Bolo",
+    17.9,
+    "Bolo especial para acompanhar seu café."
+   ]
+  ],
+  "photo": "img/cafe.jpg"
+ },
+ "portal": {
+  "name": "norte em pauta.",
+  "label": "PORTAL DE NOTÍCIAS · EDITORIAL",
+  "title": "A informação tem endereço.",
+  "subtitle": "Um portal moderno para destacar histórias, cultura e o que importa para a nossa região.",
+  "accent": "#6ce4e5",
+  "items": [
+   [
+    "Cultura e tradição",
+    0,
+    "Editorial demonstrativo sobre a identidade regional."
+   ],
+   [
+    "Economia local",
+    0,
+    "Espaço para notícias e oportunidades da região."
+   ],
+   [
+    "Agenda da cidade",
+    0,
+    "Área de eventos e informações da comunidade."
+   ]
+  ],
+  "photo": "img/portal.jpg"
+ }
+}
