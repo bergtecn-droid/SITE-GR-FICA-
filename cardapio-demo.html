@@ -96,7 +96,25 @@ h2{font-size:clamp(1.45rem,3.4vw,2rem);margin-bottom:8px}
 .field label{display:block;font-size:.84rem;color:var(--muted);font-weight:700;margin-bottom:5px}
 .field input,.field select{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(43,35,32,.15);background:#fffdfb;color:var(--ink);font-size:.95rem}
 .field input:focus,.field select:focus{outline:none;border-color:var(--acc)}
-.empty{color:var(--muted);text-align:center;padding:18px 0;font-size:.95rem}
+
+.coupon-row{display:flex;gap:8px}
+.coupon-row input{flex:1;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(43,35,32,.15);background:#fffdfb;color:var(--ink);font-size:.95rem;text-transform:uppercase}
+.coupon-row input:focus{outline:none;border-color:var(--acc)}
+.coupon-row button{padding:0 18px;border-radius:12px;border:none;background:var(--ink);color:#fff;font-weight:800;cursor:pointer}
+.coupon-ok{font-size:.84rem;font-weight:700;margin-top:6px;min-height:1em}
+.rowlin{display:flex;justify-content:space-between;padding:3px 0;font-size:.95rem;color:var(--muted)}
+.rowlin.big{font-weight:800;font-size:1.2rem;color:var(--ink);padding:10px 0 6px}
+.drink-head{margin-top:40px}
+.dish .ph.noimg{display:grid;place-items:center;font-size:3.2rem;background:linear-gradient(135deg,var(--acc),rgba(43,35,32,.4))}
+.receipt{background:repeating-linear-gradient(0deg,#fffbe9,#fffbe9 27px,#fdf5de 28px);border:1.5px dashed #c9bcb2;border-radius:14px;padding:18px 20px;font-family:ui-monospace,'Courier New',monospace;font-size:.84rem;color:#3a2f28}
+.receipt .r-c{text-align:center}
+.receipt .r-brand{font-weight:800;font-size:1.05rem;margin:3px 0 4px;text-transform:uppercase}
+.receipt .r-line{border-top:1.5px dashed #c9bcb2;margin:10px 0}
+.receipt .r-row{display:flex;justify-content:space-between;gap:10px;margin:4px 0}
+.receipt .r-row span:first-child{max-width:72%}
+.receipt .r-total{display:flex;justify-content:space-between;font-weight:800;font-size:1.02rem}
+.receipt .r-info{margin-top:4px;line-height:1.6}
+.receipt .r-tear{text-align:center;color:#b6a89d;font-size:.72rem;margin-top:10px;letter-spacing:.18em}
 
 footer{background:#231a15;color:#c9bcb2;margin-top:30px;padding:36px 5%;text-align:center;font-size:.9rem}
 footer .brandline{color:#fff;font-weight:800;font-size:1.05rem;margin-bottom:6px;font-family:Georgia,serif}
@@ -113,6 +131,7 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
     <a href="#top">Início</a>
     <a href="#cardapio">Cardápio</a>
     <a href="#contato">Contato</a>
+    <a href="#" id="shareDemo">🔗 Compartilhar</a>
     <a class="wa-link" id="navWa">💬 WhatsApp</a>
   </div>
 </nav>
@@ -144,6 +163,7 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
     <div class="demo-bar">
       🧪 <b>Painel de teste:</b> mude o exemplo e veja o cardápio se adaptar à marca
       <div class="demo-chips" id="switcher"></div>
+      <button class="btn btn-soft" style="padding:8px 16px;font-size:.85rem" id="demoNota">🧾 Ver exemplo de nota pronta</button>
     </div>
   </div>
 </section>
@@ -153,6 +173,12 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
   <h2 id="dishesTitle">Os pratos mais pedidos</h2>
   <p class="sub">Fotos, descrições e preços de verdade — no cardápio final do seu negócio, são os seus pratos aqui.</p>
   <div class="dish-grid" id="menu"></div>
+  <div id="beber" class="drink-head">
+    <div class="kicker">🥤 PARA BEBER</div>
+    <h2>Bebidas geladas</h2>
+    <p class="sub">Refrigerante, suco natural e água entram no mesmo carrinho — na versão final, aqui ficam as bebidas do seu negócio.</p>
+    <div class="dish-grid" id="drinks"></div>
+  </div>
 </section>
 
 <section id="contato">
@@ -173,12 +199,44 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
 
 <div class="modal" id="cartModal">
   <div class="modal-card">
-    <h3>🛒 Revisar pedido <button class="close" id="cartClose">✕</button></h3>
+    <h3>🛒 Seu pedido <button class="close" id="cartClose">✕</button></h3>
     <div id="cartLines"></div>
-    <div class="total"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
-    <div class="field"><label>Seu nome</label><input id="custName" placeholder="Ex.: Maria"></div>
+    <div class="field" style="margin-top:14px"><label>🎟️ Cupom de desconto</label>
+      <div class="coupon-row"><input id="couponInput" placeholder="Ex.: OFICINA10"><button id="couponApply">Aplicar</button></div>
+      <div id="couponOk" class="coupon-ok"></div>
+    </div>
+    <div class="rowlin"><span>Subtotal</span><span id="sumSub">R$ 0,00</span></div>
+    <div class="rowlin" id="discRow" style="display:none;color:#1a9e56"><span>Desconto</span><span id="sumDisc">R$ 0,00</span></div>
+    <div class="rowlin big"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+    <button class="btn btn-acc" style="width:100%;justify-content:center;padding:15px;margin-top:8px" id="proceed">Prosseguir pedido →</button>
+  </div>
+</div>
+
+<div class="modal" id="checkoutModal">
+  <div class="modal-card">
+    <h3>📋 Finalizar pedido <button class="close" id="coClose">✕</button></h3>
+    <div class="field"><label>Nome completo</label><input id="custName" placeholder="Ex.: Maria Silva"></div>
+    <div class="field"><label>WhatsApp (com DDD)</label><input id="custPhone" placeholder="Ex.: (91) 98160-4336" inputmode="tel"></div>
     <div class="field"><label>Como prefere receber?</label><select id="fulfill"><option>🛵 Delivery</option><option>🏬 Retirada no local</option><option>🍽️ Consumo no salão</option></select></div>
-    <button class="btn btn-wa2" style="width:100%;justify-content:center;padding:15px" id="sendOrder">💬 Finalizar pedido pelo WhatsApp</button>
+    <div class="field" id="addrWrap"><label>📍 Endereço de entrega</label>
+      <input id="custAddr" placeholder="Rua, número e bairro">
+      <div style="display:flex;gap:8px;margin-top:8px"><input id="custCity" placeholder="Cidade" style="flex:1"><input id="custRef" placeholder="Referência (opcional)" style="flex:1"></div>
+    </div>
+    <div class="field"><label>Forma de pagamento</label><select id="pay"><option>💰 Dinheiro</option><option>💳 Cartão na entrega</option><option>🔑 Pix</option></select></div>
+    <div class="rowlin big" style="padding-bottom:14px"><span>Total do pedido</span><span id="coTotal">R$ 0,00</span></div>
+    <button class="btn btn-wa2" style="width:100%;justify-content:center;padding:15px" id="sendOrder">✅ Confirmar pedido</button>
+  </div>
+</div>
+
+<div class="modal" id="noteModal">
+  <div class="modal-card">
+    <h3>🧾 Nota do pedido <button class="close" id="noteClose">✕</button></h3>
+    <p class="sub" style="margin-bottom:14px">É assim que a notinha chega no seu WhatsApp, já organizada: itens, total, endereço e pagamento — é só conferir e responder.</p>
+    <div id="rBody"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-wa2" style="flex:1;justify-content:center" id="confirmSend">✅ Confirmar e enviar no WhatsApp</button>
+      <button class="btn btn-soft" id="noteBack">✏️ Corrigir</button>
+    </div>
   </div>
 </div>
 
@@ -197,14 +255,18 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
 'use strict';
 const WHATSAPP='5591981604336';
 const IG='https://www.instagram.com/oficinadodesign.oficial/';
-const BRData=[{"sushi":{"name":"koi sushi.","emoji":"🍣","label":"CARDÁPIO DIGITAL · COZINHA JAPONESA","title":"Um ritual de sabor.","subtitle":"Conheça uma experiência japonesa feita para despertar os sentidos. Elegância em cada detalhe.","accent":"#ff6b3d","photo":"img/sushi.jpg","kicker2":"🍣 VENHA PROVANTAR","items":[["Combinado Koi 20 peças",79.9,"Uma seleção especial de sushis e sashimis, montada no dia."],["Salmão Especial",35.9,"Peças de salmão com finalização delicada no blowtorch."],["Hot Roll Crocante",29.9,"O clássico enrolado com cebolinha crocante."]]},"acai":{"name":"nativo açaí.","emoji":"🍇","label":"CARDÁPIO DIGITAL · AÇAÍTERIA","title":"A energia do Norte no seu copo.","subtitle":"Açaí cremoso, generoso e montado do seu jeito. Tradição paraense com a energia da região.","accent":"#8e44d6","photo":"img/acai.jpg","kicker2":"🍇 MONTE SEU COPO","items":[["Tigela 500ml completa",24.9,"Açaí cremoso com barra de acompanhamentos à escolha."],["Copo 300ml tradicional",16.9,"O clássico que nunca decepciona — granola e banana inclui."],["Açaí com cupuaçu",27.9,"A combinação paraense perfeita, cremosa e geladinha."]]},"burger":{"name":"BRASA.","emoji":"🔥","label":"CARDÁPIO DIGITAL · HAMBURGUERIA","title":"Fogo, fumaça e sabor.","subtitle":"Smash burgers na chapa quente, blend 100% bovino e pão brioche fresquinho.","accent":"#d35400","photo":"img/burger.jpg","kicker2":"🔥 DIRETO DA CHAPA","items":[["Smash Duplo Brasa",32.9,"Dois smashs, cheddar duplo e molho da casa na brioche."],["Costela BBQ 12h",38.9,"Costela desfiada 12 horas no bafo com cheddar e onion rings."],["Frango Crocante",27.9,"Filé empanado crocante com maionese verde da casa."]]},"pizza":{"name":"forno 51.","emoji":"🍕","label":"CARDÁPIO DIGITAL · PIZZARIA","title":"Massa artesanal, forno a lenha.","subtitle":"Fermentação natural e forno de alvenaria a lenha, no ponto certo.","accent":"#e0862c","photo":"img/pizza.jpg","kicker2":"🍕 SAINDO DO FORNO","items":[["Margherita Grão",44.9,"Molho artesanal, mussarela de búfala e manjericão fresco."],["Pepperoni napa 51",49.9,"Pepperoni fatiado fino com bordo recheado de catupiry."],["Quatro Queijos",47.9,"Muçarela, parmesão, gouda e gorgonzola gratinados."]]},"cafe":{"name":"aurora café.","emoji":"☕","label":"SITE INSTITUCIONAL · CAFETERIA","title":"Pausa que acorda a alma.","subtitle":"Cafés de origem, assados artesanais e aquele ambiente pra ficar o dia inteiro.","accent":"#8c6d46","photo":"img/cafe.jpg","kicker2":"☕ ACORDE JUNTO","items":[["Latte Aurora",14.9,"Espresso de origem com leite vaporizado sedoso."],["Café Coado V60",12.9,"Método manual para valorizar a doçura natural do grão."],["Croissant Amêndoas",16.9,"Laminado na hora com creme de amêndoas."]]},"portal":{"name":"norte em pauta.","emoji":"📰","label":"PORTAL DE NOTÍCIAS · EDITORIAL","title":"Jornalismo na velocidade da cidade.","subtitle":"Portal de notícias completo para Castanhal e região — a cidade inteira em uma aba.","accent":"#0e7c86","photo":"img/portal.jpg","kicker2":"📰 ÚLTIMAS DA CIDADE","items":[["Plano Portal Mensal",299.9,"Portal completo com gestão editorial e dominio próprio."],["Plano Portal Anual",2999.9,"Domínio, hospedagem e suporte contínuo no plano anual."],["Publicidade no Portal",99.9,"Banners em posição estratégica por todo o portal."]]}}][0];
-
+const BRData=[{"sushi":{"name":"koi sushi.","emoji":"🍣","label":"CARDÁPIO DIGITAL · COZINHA JAPONESA","title":"Um ritual de sabor.","subtitle":"Conheça uma experiência japonesa feita para despertar os sentidos. Elegância em cada detalhe.","accent":"#ff6b3d","photo":"img/sushi.jpg","kicker2":"🍣 VENHA PROVAR","items":[["Combinado Koi 20 peças",79.9,"Uma seleção especial de sushis e sashimis, montada no dia."],["Salmão Especial",35.9,"Peças de salmão com finalização delicada no blowtorch."],["Hot Roll Crocante",29.9,"O clássico enrolado com cebolinha crocante."]]},"acai":{"name":"nativo açaí.","emoji":"🍇","label":"CARDÁPIO DIGITAL · AÇAÍTERIA","title":"A energia do Norte no seu copo.","subtitle":"Açaí cremoso, generoso e montado do seu jeito. Tradição paraense com a energia da região.","accent":"#8e44d6","photo":"img/acai.jpg","kicker2":"🍇 MONTE SEU COPO","items":[["Tigela 500ml completa",24.9,"Açaí cremoso com barra de acompanhamentos à escolha."],["Copo 300ml tradicional",16.9,"O clássico que nunca decepciona — granola e banana inclusos."],["Açaí com cupuaçu",27.9,"A combinação paraense perfeita, cremosa e geladinha."]]},"burger":{"name":"BRASA.","emoji":"🔥","label":"CARDÁPIO DIGITAL · HAMBURGUERIA","title":"Fogo, fumaça e sabor.","subtitle":"Smash burgers na chapa quente, blend 100% bovino e pão brioche fresquinho.","accent":"#d35400","photo":"img/burger.jpg","kicker2":"🔥 DIRETO DA CHAPA","items":[["Smash Duplo Brasa",32.9,"Dois smashs, cheddar duplo e molho da casa na brioche."],["Costela BBQ 12h",38.9,"Costela desfiada 12 horas no bafo com cheddar e onion rings."],["Frango Crocante",27.9,"Filé empanado crocante com maionese verde da casa."]]},"pizza":{"name":"forno 51.","emoji":"🍕","label":"CARDÁPIO DIGITAL · PIZZARIA","title":"Massa artesanal, forno a lenha.","subtitle":"Fermentação natural e forno de alvenaria a lenha, no ponto certo.","accent":"#e0862c","photo":"img/pizza.jpg","kicker2":"🍕 SAINDO DO FORNO","items":[["Margherita Grão",44.9,"Molho artesanal, mussarela de búfala e manjericão fresco."],["Pepperoni Napa 51",49.9,"Pepperoni fatiado fino com bordo recheado de catupiry."],["Quatro Queijos",47.9,"Mussarela, parmesão, gouda e gorgonzola gratinados."]]},"cafe":{"name":"aurora café.","emoji":"☕","label":"SITE INSTITUCIONAL · CAFETERIA","title":"Pausa que acorda a alma.","subtitle":"Cafés de origem, assados artesanais e aquele ambiente pra ficar o dia inteiro.","accent":"#8c6d46","photo":"img/cafe.jpg","kicker2":"☕ ACORDE JUNTO","items":[["Latte Aurora",14.9,"Espresso de origem com leite vaporizado sedoso."],["Café Coado V60",12.9,"Método manual para valorizar a doçura natural do grão."],["Croissant Amêndoas",16.9,"Laminado na hora com creme de amêndoas."]]},"portal":{"name":"norte em pauta.","emoji":"📰","label":"PORTAL DE NOTÍCIAS · EDITORIAL","title":"Jornalismo na velocidade da cidade.","subtitle":"Portal de notícias completo para Castanhal e região — a cidade inteira em uma aba.","accent":"#0e7c86","photo":"img/portal.jpg","kicker2":"📰 ÚLTIMAS DA CIDADE","items":[["Plano Portal Mensal",299.9,"Portal completo com gestão editorial e domínio próprio."],["Plano Portal Anual",2999.9,"Domínio, hospedagem e suporte contínuo no plano anual."],["Publicidade no Portal",99.9,"Banners em posição estratégica por todo o portal."]]}}][0];
+const BEBIDAS=[["Refrigerante Lata 350ml",6,"Coca-Cola, Guaraná ou Fanta — sempre geladinho."],["Suco Natural 500ml",9.9,"Laranja, maracujá ou cupuaçu, feito na hora."],["Água Mineral 500ml",4,"Com ou sem gás, pra acompanhar."],["Limonada Suíça 500ml",12.9,"Limão batido com gelo e toque cremoso."]];
+const CUPONS={'OFICINA10':0.10,'BEMVINDO5':0.05};
 let activeKey='sushi';
 let cart={};
+let coupon=null;
+let pending=null;
 
 function br(){return BRData[activeKey];}
 function fmt(v){return 'R$ '+v.toFixed(2).replace('.',',');}
-function waUrl(text){return 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(text||'Olá! Vi o menu digital e quero fazer um pedido! 🍴');}
+function waUrl(text){return 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(text||'Olá! Vi o menu digital e quero fazer um pedido! 🍽️');}
+function summary(){let c=0,t=0;Object.values(cart).forEach(x=>{c+=x.qty;t+=x.qty*x.price;});const d=coupon?t*coupon.off:0;return{c,t,d};}
 
 function renderTheme(){
   const b=br();
@@ -232,6 +294,10 @@ function renderCats(){
     c.onclick=()=>document.getElementById('pratos').scrollIntoView({behavior:'smooth'});
     box.appendChild(c);
   });
+  const b=document.createElement('div');b.className='cat';
+  b.innerHTML=`<span class="em">🥤</span>Bebidas`;
+  b.onclick=()=>document.getElementById('beber').scrollIntoView({behavior:'smooth'});
+  box.appendChild(b);
 }
 
 function renderSwitcher(){
@@ -240,7 +306,7 @@ function renderSwitcher(){
     const b=document.createElement('button');
     b.className='chip'+(k===activeKey?' active':'');
     b.textContent=BRData[k].emoji+' '+BRData[k].name.replace(/\.$/,'');
-    b.onclick=()=>{activeKey=k;cart={};renderAll();};
+    b.onclick=()=>{activeKey=k;cart={};coupon=null;document.getElementById('couponInput').value='';document.getElementById('couponOk').textContent='';renderAll();};
     box.appendChild(b);
   });
 }
@@ -261,23 +327,43 @@ function renderMenu(){
   g.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>rem(Number(b.dataset.m)));
 }
 
-function add(idx){const it=br().items[idx];cart[it[0]]=cart[it[0]]||{...it,qty:0};cart[it[0]].qty++;paint();}
-function rem(idx){const it=br().items[idx];if(!cart[it[0]])return;cart[it[0]].qty--;if(!cart[it[0]].qty)delete cart[it[0]];paint();}
+function renderDrinks(){
+  const g=document.getElementById('drinks');g.innerHTML='';
+  BEBIDAS.forEach((it,idx)=>{
+    const d=document.createElement('div');d.className='dish';
+    d.innerHTML=`
+      <div class="ph noimg" style="background:linear-gradient(135deg,var(--acc),rgba(43,35,32,.4))">${['🥤','🍹','💧','🍋'][idx]}</div>
+      <div class="bd"><h3>${it[0]}</h3><p>${it[2]}</p>
+      <div class="foot"><span class="price">${fmt(it[1])}</span>
+      <div class="addqty"><button data-mb="${idx}">−</button><b class="q" id="q-b-${idx}">0</b><button class="plus" data-pb="${idx}">+</button></div></div></div>`;
+    g.appendChild(d);
+  });
+  g.querySelectorAll('[data-pb]').forEach(b=>b.onclick=()=>addB(Number(b.dataset.pb)));
+  g.querySelectorAll('[data-mb]').forEach(b=>b.onclick=()=>remB(Number(b.dataset.mb)));
+}
 
-function summary(){let c=0,t=0;Object.values(cart).forEach(x=>{c+=x.qty;t+=x.qty*x.price;});return{c,t};}
+function add(idx){const it=br().items[idx];cart[it[0]]=cart[it[0]]||{name:it[0],price:it[1],desc:it[2],qty:0};cart[it[0]].qty++;paint();}
+function rem(idx){const it=br().items[idx];if(!cart[it[0]])return;cart[it[0]].qty--;if(!cart[it[0]].qty)delete cart[it[0]];paint();}
+function addB(idx){const it=BEBIDAS[idx];cart[it[0]]=cart[it[0]]||{name:it[0],price:it[1],desc:it[2],qty:0};cart[it[0]].qty++;paint();}
+function remB(idx){const it=BEBIDAS[idx];if(!cart[it[0]])return;cart[it[0]].qty--;if(!cart[it[0]].qty)delete cart[it[0]];paint();}
 
 function paint(){
   br().items.forEach((it,idx)=>{const el=document.getElementById('q-'+idx);const n=cart[it[0]]?cart[it[0]].qty:0;if(el)el.textContent=n;});
-  const {c,t}=summary();
-  document.getElementById('cartCount').textContent=`🛒 ${c} ${c===1?'item':'itens'} · ${fmt(t)}`;
-  document.getElementById('cartBtn').classList.toggle('show',c>0);
+  BEBIDAS.forEach((it,idx)=>{const el=document.getElementById('q-b-'+idx);const n=cart[it[0]]?cart[it[0]].qty:0;if(el)el.textContent=n;});
+  const s=summary();
+  document.getElementById('cartCount').textContent=`🛒 ${s.c} ${s.c===1?'item':'itens'} · ${fmt(s.t-s.d)}`;
+  document.getElementById('cartBtn').classList.toggle('show',s.c>0);
   renderLines();
 }
 
 function renderLines(){
   const box=document.getElementById('cartLines');box.innerHTML='';
   const es=Object.values(cart).filter(x=>x.qty>0);
-  document.getElementById('cartTotal').textContent=fmt(summary().t);
+  const s=summary();
+  document.getElementById('sumSub').textContent=fmt(s.t);
+  document.getElementById('sumDisc').textContent=s.d>0?'- '+fmt(s.d):fmt(0);
+  document.getElementById('discRow').style.display=s.d>0?'':'none';
+  document.getElementById('cartTotal').textContent=fmt(s.t-s.d);
   if(!es.length){box.innerHTML='<div class="empty">Seu carrinho está vazio — adicione algo delicioso 😋</div>';return;}
   es.forEach(x=>{
     const l=document.createElement('div');l.className='cline';
@@ -287,19 +373,117 @@ function renderLines(){
   });
 }
 
-function renderAll(){renderSwitcher();renderTheme();renderCats();renderMenu();paint();}
+function renderAll(){renderSwitcher();renderTheme();renderCats();renderMenu();renderDrinks();paint();}
+
+function buildOrder(){
+  const es=Object.values(cart).filter(x=>x.qty>0);
+  if(!es.length){alert('Seu carrinho está vazio! Adicione itens do cardápio primeiro.');return null;}
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const fulfill=document.getElementById('fulfill').value;
+  const pay=document.getElementById('pay').value;
+  const addr=document.getElementById('custAddr').value.trim();
+  const city=document.getElementById('custCity').value.trim();
+  const ref=document.getElementById('custRef').value.trim();
+  if(!name){alert('Preencha seu nome completo 🙋');return null;}
+  if(phone.replace(/\D/g,'').length<10){alert('Digite o WhatsApp com DDD — ex.: (91) 98160-4336 📱');return null;}
+  if(fulfill==='🛵 Delivery'&&!addr){alert('Preencha o endereço de entrega 📍');return null;}
+  const s=summary();
+  let msg=`Olá, ${br().name}! Vim pelo cardápio digital 🧾\n\n*Meu pedido:*\n`;
+  msg+=es.map(x=>`• ${x.qty}x ${x.name} — ${fmt(x.qty*x.price)}`).join('\n');
+  if(coupon)msg+=`\n🎟️ Cupom ${coupon.code}: -${fmt(s.d)}`;
+  msg+=`\n\n💰 Total: ${fmt(s.t-s.d)}\n🚚 Atendimento: ${fulfill}\n💳 Pagamento: ${pay}\n🙋 Nome: ${name}\n📱 WhatsApp: ${phone}`;
+  if(addr)msg+=`\n📍 Endereço: ${addr}${city?', '+city:''}${ref?' (Ref.: '+ref+')':''}`;
+  msg+='\n\nPedido feito pelo cardápio digital (demo) — Oficina do Design.';
+  return{es,name,phone,fulfill,pay,addr,city,ref,coupon:coupon?{code:coupon.code,off:coupon.off}:null,total:s.t-s.d,disc:s.d,msg};
+}
+
+function renderReceipt(o){
+  const now=new Date();
+  const dt=now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const rows=o.es.map(x=>`<div class="r-row"><span>${x.qty}x ${x.name}</span><span>${fmt(x.qty*x.price)}</span></div>`).join('');
+  const cup=o.coupon?`<div class="r-row" style="color:#1a9e56"><span>🎟️ Cupom ${o.coupon.code}</span><span>-${fmt(o.disc)}</span></div>`:'';
+  const sub=o.disc>0?`<div class="r-row"><span>Subtotal</span><span>${fmt(o.total+o.disc)}</span></div>`:'';
+  return `<div class="r-c"><div>✂️ - - - - - - - - - - - -</div><div class="r-brand">${br().name.replace(/\.$/,'')}</div><div>NOTA DO PEDIDO · ${dt}</div></div>`
+    +`<div class="r-line"></div>${rows}${cup}<div class="r-line"></div>${sub}`
+    +`<div class="r-total"><span>TOTAL</span><span>${fmt(o.total)}</span></div><div class="r-line"></div>`
+    +`<div class="r-info">🙋 Nome: ${o.name}<br>📱 WhatsApp: ${o.phone}<br>🚚 Atendimento: ${o.fulfill}<br>💳 Pagamento: ${o.pay}`
+    +(o.addr?`<br>📍 Endereço: ${o.addr}${o.city?', '+o.city:''}${o.ref?' — Ref.: '+o.ref:''}`:'')
+    +`</div><div class="r-tear">✂️ - - - - - - - - - - - - - -</div><div class="r-c" style="margin-top:8px">Obrigado pela preferência! 😋</div>`;
+}
+
+function showNote(o){
+  pending=o;
+  document.getElementById('rBody').innerHTML=renderReceipt(o);
+  document.getElementById('cartModal').classList.remove('open');
+  document.getElementById('checkoutModal').classList.remove('open');
+  document.getElementById('noteModal').classList.add('open');
+}
 
 document.getElementById('cartBtn').onclick=()=>document.getElementById('cartModal').classList.add('open');
 document.getElementById('cartClose').onclick=()=>document.getElementById('cartModal').classList.remove('open');
 document.getElementById('cartModal').addEventListener('click',e=>{if(e.target.id==='cartModal')e.target.classList.remove('open');});
+document.getElementById('coClose').onclick=()=>document.getElementById('checkoutModal').classList.remove('open');
+document.getElementById('checkoutModal').addEventListener('click',e=>{if(e.target.id==='checkoutModal')e.target.classList.remove('open');});
+document.getElementById('noteClose').onclick=()=>document.getElementById('noteModal').classList.remove('open');
+document.getElementById('noteBack').onclick=()=>{document.getElementById('noteModal').classList.remove('open');document.getElementById('checkoutModal').classList.add('open');};
+document.getElementById('noteModal').addEventListener('click',e=>{if(e.target.id==='noteModal')e.target.classList.remove('open');});
+
+document.getElementById('fulfill').onchange=e=>{
+  document.getElementById('addrWrap').style.display=e.target.value==='🛵 Delivery'?'':'none';
+};
+
+document.getElementById('proceed').onclick=()=>{
+  const s=summary();
+  if(!s.c){alert('Seu carrinho está vazio! Adicione itens do cardápio primeiro.');return;}
+  document.getElementById('coTotal').textContent=fmt(s.t-s.d);
+  document.getElementById('cartModal').classList.remove('open');
+  document.getElementById('checkoutModal').classList.add('open');
+};
+
+document.getElementById('couponApply').onclick=()=>{
+  const v=document.getElementById('couponInput').value.trim().toUpperCase();
+  const ok=document.getElementById('couponOk');
+  if(!v){ok.textContent='';coupon=null;paint();return;}
+  if(CUPONS[v]){coupon={code:v,off:CUPONS[v]};ok.style.color='#1a9e56';ok.textContent=`Cupom ${v} aplicado: ${(CUPONS[v]*100).toFixed(0)}% de desconto! 🎉`;}
+  else{coupon=null;ok.style.color='#c0392b';ok.textContent='Cupom inválido — teste com OFICINA10 😉';}
+  paint();
+};
+
 document.getElementById('sendOrder').onclick=()=>{
-  const es=Object.values(cart).filter(x=>x.qty>0);
-  if(!es.length){alert('Seu carrinho está vazio! Adicione itens do cardápio primeiro.');return;}
-  const name=document.getElementById('custName').value.trim()||'(sem nome)';
-  const fulfill=document.getElementById('fulfill').value;
-  const lines=es.map(x=>`• ${x.qty}× ${x.name} — ${fmt(x.qty*x.price)}`).join('\n');
-  const msg=`Olá, ${br().name}! 🍽️\n\nMeu pedido:\n${lines}\n\n💰 Total: ${fmt(summary().t)}\n🚚 Atendimento: ${fulfill}\n🙋 Nome: ${name}\n\nPedido feito pelo cardápio digital (demo) — Oficina do Design.`;
-  window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+  const o=buildOrder();
+  if(o)showNote(o);
+};
+document.getElementById('confirmSend').onclick=()=>{
+  if(!pending)return;
+  window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(pending.msg),'_blank','noopener,noreferrer');
+};
+
+document.getElementById('demoNota').onclick=()=>{
+  const first=br().items[0],beb=BEBIDAS[0];
+  cart={};
+  cart[first[0]]={name:first[0],price:first[1],desc:first[2],qty:2};
+  cart[beb[0]]={name:beb[0],price:beb[1],desc:beb[2],qty:1};
+  coupon={code:'OFICINA10',off:CUPONS.OFICINA10};
+  document.getElementById('custName').value='Maria Silva';
+  document.getElementById('custPhone').value='(91) 98160-4336';
+  document.getElementById('fulfill').value='🛵 Delivery';
+  document.getElementById('addrWrap').style.display='';
+  document.getElementById('custAddr').value='R. Dom Pedro II, 210 — Centro';
+  document.getElementById('custCity').value='Castanhal — PA';
+  document.getElementById('custRef').value='Casa amarela depois do mercado';
+  document.getElementById('pay').value='🔑 Pix';
+  paint();
+  showNote(buildOrder());
+};
+
+document.getElementById('shareDemo').onclick=e=>{
+  e.preventDefault();
+  const url=location.href.split('#')[0];
+  const txt='Olha que legal este cardápio digital demo da Oficina do Design! 🍽️';
+  if(navigator.share){navigator.share({title:'Cardápio Digital Demo — Oficina do Design',text:txt,url}).catch(()=>{});}
+  else if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>alert('Link copiado! Agora é só colar no WhatsApp do seu cliente. 📋'),()=>{});}
+  else{alert('Copie o link na barra de endereço e cole no WhatsApp. 📋');}
 };
 
 renderAll();
