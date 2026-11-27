@@ -272,6 +272,7 @@ if(CFG){
   if(CFG.cupons)Object.keys(CFG.cupons).forEach(k=>CUPONS[k]=Number(CFG.cupons[k]));
 }
 let activeKey='sushi';
+try{const dp=new URLSearchParams(location.search).get('demo');if(dp&&BRData[dp]){activeKey=dp;}}catch(e){}
 let cart={};
 let coupon=null;
 let pending=null;
