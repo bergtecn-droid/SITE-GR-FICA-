@@ -144,10 +144,18 @@ document.getElementById('year').textContent=new Date().getFullYear();if('Interse
 (function(){
   var cfg=null;try{cfg=JSON.parse(localStorage.getItem('sd-cardapio')||'null');}catch(e){}
   if(!cfg||!cfg.planos)return;
-  function set(id,t){var el=document.getElementById(id);if(el&&t!=null)el.textContent=t;}
+  function set(id,t,pre,suf){
+    var el=document.getElementById(id);if(!el)return;
+    if(t==null)return;
+    t=String(t);
+    if(!t){el.textContent='';return;}
+    if(pre&&t.indexOf(pre)!=0)t=pre+t;
+    if(suf&&t.indexOf(suf)<0)t=t+suf;
+    el.textContent=t;
+  }
   var p1=cfg.planos.p1||{},p2=cfg.planos.p2||{};
-  set('pl1Titulo',p1.titulo);set('pl1Rot',p1.rot);set('pl1Preco',p1.preco);set('pl1Pag',p1.pag);set('pl1Mes',p1.mes);set('pl1Btn',p1.botao);
-  set('pl2Titulo',p2.titulo);set('pl2Rot',p2.rot);set('pl2Preco',p2.preco);set('pl2Pag',p2.pag);set('pl2Mes',p2.mes);set('pl2Btn',p2.botao);
+  set('pl1Titulo',p1.titulo);set('pl1Rot',p1.rot);set('pl1Preco',p1.preco,'R$ ');set('pl1Pag',p1.pag);set('pl1Mes',p1.mes,'R$ ','/m\u00eas');set('pl1Btn',p1.botao);
+  set('pl2Titulo',p2.titulo);set('pl2Rot',p2.rot);set('pl2Preco',p2.preco,'R$ ');set('pl2Pag',p2.pag);set('pl2Mes',p2.mes,'R$ ','/m\u00eas');set('pl2Btn',p2.botao);
 })();
 </script>
 </body></html>

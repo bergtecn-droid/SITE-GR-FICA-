@@ -138,7 +138,7 @@ p.subsec{color:var(--muted);font-size:.92rem;margin-bottom:18px;line-height:1.5}
         <div class="f"><label>Manutenção por mês (ex.: 38,00)</label><input data-plan="p2.mes"></div>
       </div>
     </div>
-    <p class="subsec">💡 O preço aparece como "R$ " + o que você digitar, e a manutenção como "Manutenção técnica a partir de R$ X/mês".</p>
+    <p class="subsec">💡 Digite só o número (ex.: 450,00) — o site mostra "R$ 450,00" e a manutenção como "R$ 45,00/mês". Salva sozinho enquanto você digita. Depois abra a página principal e aperte <b>F5</b> para conferir (isso vale só no SEU navegador — para o cliente ver, use o botão 📤 abaixo ou me fale os valores no chat).</p>
     <div class="bcard">
       <p class="subsec"><b>📢 Publicar para todo mundo:</b> o que você salva aqui aparece no SEU navegador (teste/ensaio). Para o cliente ver os valores novos de verdade, gere o arquivo do site atualizado e me envie no chat — eu publico.</p>
       <button class="btn btn-acc" id="btnPublicar" style="width:auto">📤 Gerar site com os valores novos</button>
@@ -381,6 +381,8 @@ function renderPlanos(){
       cfg.planos[pl]=cfg.planos[pl]||{};
       cfg.planos[pl][campo]=el.value;
       markDirty();
+      clearTimeout(window.__plT);
+      window.__plT=setTimeout(save,800);
     };
   });
 }
