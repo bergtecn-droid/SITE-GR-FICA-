@@ -94,6 +94,7 @@ p.subsec{color:var(--muted);font-size:.92rem;margin-bottom:18px;line-height:1.5}
   <div class="tabs">
     <button class="tab active" data-t="pratos">🍽️ Pratos e marcas</button>
     <button class="tab" data-t="bebidas">🥤 Bebidas</button>
+    <button class="tab" data-t="valores">💰 Valores do site</button>
     <button class="tab" data-t="contato">💬 Contato</button>
     <button class="tab" data-t="cupons">🎟️ Cupons</button>
     <button class="tab" data-t="backup">📦 Backup</button>
@@ -110,6 +111,39 @@ p.subsec{color:var(--muted);font-size:.92rem;margin-bottom:18px;line-height:1.5}
     <h2 class="sec">Bebidas</h2>
     <p class="subsec">Aparecem na seção "Bebidas geladas" do cardápio.</p>
     <div id="bebBox"></div>
+  </div>
+
+  <div class="panel" id="pan-valores">
+    <h2 class="sec">Valores do site principal</h2>
+    <p class="subsec">Os dois planos de preço que aparecem na página principal (a parte "Um começo simples"). Tudo é texto livre: preço com vírgula, ex.: <b>247,90</b>.</p>
+    <div class="bcard">
+      <div class="items-head">PLANO 1 — SITE + CARDÁPIO DIGITAL</div>
+      <div class="grid2">
+        <div class="f"><label>Nome do plano</label><input data-plan="p1.titulo"></div>
+        <div class="f"><label>Texto do botão</label><input data-plan="p1.botao"></div>
+        <div class="f"><label>Rótulo pequeno (em cima do preço)</label><input data-plan="p1.rot"></div>
+        <div class="f"><label>Valor de implantação (ex.: 247,90)</label><input data-plan="p1.preco"></div>
+        <div class="f"><label>Aviso do lado do preço (ex.: pagamento único — vazio apaga)</label><input data-plan="p1.pag"></div>
+        <div class="f"><label>Manutenção por mês (ex.: 39,90)</label><input data-plan="p1.mes"></div>
+      </div>
+    </div>
+    <div class="bcard">
+      <div class="items-head">PLANO 2 — PORTAL DE NOTÍCIAS</div>
+      <div class="grid2">
+        <div class="f"><label>Nome do plano</label><input data-plan="p2.titulo"></div>
+        <div class="f"><label>Texto do botão</label><input data-plan="p2.botao"></div>
+        <div class="f"><label>Rótulo pequeno (em cima do preço)</label><input data-plan="p2.rot"></div>
+        <div class="f"><label>Valor de implantação (ex.: 140,00)</label><input data-plan="p2.preco"></div>
+        <div class="f"><label>Aviso do lado do preço (vazio apaga)</label><input data-plan="p2.pag"></div>
+        <div class="f"><label>Manutenção por mês (ex.: 38,00)</label><input data-plan="p2.mes"></div>
+      </div>
+    </div>
+    <p class="subsec">💡 O preço aparece como "R$ " + o que você digitar, e a manutenção como "Manutenção técnica a partir de R$ X/mês".</p>
+    <div class="bcard">
+      <p class="subsec"><b>📢 Publicar para todo mundo:</b> o que você salva aqui aparece no SEU navegador (teste/ensaio). Para o cliente ver os valores novos de verdade, gere o arquivo do site atualizado e me envie no chat — eu publico.</p>
+      <button class="btn btn-acc" id="btnPublicar" style="width:auto">📤 Gerar site com os valores novos</button>
+    </div>
+  </div>
   </div>
 
   <div class="panel" id="pan-contato">
@@ -184,7 +218,11 @@ async function sha256(txt){
 
 function defaults(){
   const b=JSON.parse(JSON.stringify(DEFS));
-  return {v:1,brands:b,bebidas:DEF_BEBIDAS.map(x=>x.slice()),whatsapp:'5591981604336',ig:'https://www.instagram.com/oficinadodesign.oficial/',cupons:{OFICINA10:0.10,BEMVINDO5:0.05}};
+  const planosPadrao={
+    p1:{titulo:'Site + Cardápio Digital',rot:'IMPLANTAÇÃO A PARTIR DE',preco:'R$ 247,90',pag:'pagamento único',mes:'Manutenção técnica a partir de R$ 39,90/mês',botao:'Consultar este plano ↗'},
+    p2:{titulo:'Portal de Notícias',rot:'IMPLANTAÇÃO A PARTIR DE',preco:'R$ 140,00',pag:'pagamento único',mes:'Manutenção técnica a partir de R$ 38,00/mês',botao:'Conversar sobre portal ↗'}
+  };
+  return {v:1,brands:b,bebidas:DEF_BEBIDAS.map(x=>x.slice()),whatsapp:'5591981604336',ig:'https://www.instagram.com/oficinadodesign.oficial/',cupons:{OFICINA10:0.10,BEMVINDO5:0.05},planos:JSON.parse(JSON.stringify(planosPadrao))};
 }
 function load(){
   try{const c=JSON.parse(localStorage.getItem(CFG_KEY));if(c&&c.brands)return Object.assign(defaults(),c);}catch(e){}
@@ -285,6 +323,9 @@ function bootAdmin(){
     bb.appendChild(d);
   });
 
+  /* valores do site */
+  renderPlanos();
+
   /* contato */
   document.getElementById('cfgWa').value=cfg.whatsapp||'';
   document.getElementById('cfgIg').value=cfg.ig||'';
@@ -329,6 +370,44 @@ function bootAdmin(){
   document.getElementById('cfgWa').addEventListener('input',e=>{cfg.whatsapp=e.target.value.replace(/\D/g,'');markDirty();});
   document.getElementById('cfgIg').addEventListener('input',e=>{cfg.ig=e.target.value.trim();markDirty();});
 }
+
+/* ---- valores do site ---- */
+function renderPlanos(){
+  document.querySelectorAll('[data-plan]').forEach(el=>{
+    const [pl,campo]=el.dataset.plan.split('.');
+    el.value=(cfg.planos&&cfg.planos[pl]&&cfg.planos[pl][campo])||'';
+    el.oninput=()=>{
+      cfg.planos=cfg.planos||{};
+      cfg.planos[pl]=cfg.planos[pl]||{};
+      cfg.planos[pl][campo]=el.value;
+      markDirty();
+    };
+  });
+}
+
+/* ---- publicar: gera index.html com valores aplicados ---- */
+document.getElementById('btnPublicar').addEventListener('click',async()=>{
+  try{
+    const res=await fetch('index.html');
+    if(!res.ok)throw new Error('não consegui baixar o index.html (abra o painel pelo link do site, não pelo arquivo local)');
+    const html=await res.text();
+    const doc=new DOMParser().parseFromString(html,'text/html');
+    const M={pl1Titulo:['p1','titulo'],pl1Rot:['p1','rot'],pl1Preco:['p1','preco'],pl1Pag:['p1','pag'],pl1Mes:['p1','mes'],pl1Btn:['p1','botao'],pl2Titulo:['p2','titulo'],pl2Rot:['p2','rot'],pl2Preco:['p2','preco'],pl2Pag:['p2','pag'],pl2Mes:['p2','mes'],pl2Btn:['p2','botao']};
+    Object.keys(M).forEach(id=>{
+      const el=doc.getElementById(id);if(!el)return;
+      const v=(cfg.planos&&cfg.planos[M[id][0]]&&cfg.planos[M[id][0]][M[id][1]]);
+      if(v!=null)el.textContent=v;
+    });
+    const out='<!DOCTYPE html>\n'+doc.documentElement.outerHTML;
+    const blob=new Blob([out],{type:'text/html'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='index-publicar.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Arquivo gerado! Envie ele no chat para eu publicar.');
+  }catch(e){alert('Não deu: '+e.message);}
+});
 
 /* ---- fotos ---- */
 function uploadPhoto(file,cb){
