@@ -143,7 +143,7 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
 <header id="top">
   <div class="hero">
     <div class="hero-cover">
-      <img id="brandPhoto" src="img/sushi.jpg" alt="Foto do prato principal" width="512" height="512" fetchpriority="high">
+      <img id="brandPhoto" src="img/sushi.jpg" alt="Foto do prato principal" width="900" height="900" fetchpriority="high">
       <div class="hero-badges"><span>⭐ +4,8 (200 avaliações)</span><span>🛵 Delivery</span></div>
       <div class="hero-txt">
         <div class="kicker" id="brandLabel">CARDÁPIO DIGITAL · COZINHA JAPONESA</div>
@@ -253,16 +253,24 @@ footer .nav{margin:14px 0;display:flex;gap:14px;justify-content:center;flex-wrap
     <a href="#" id="footIg">Instagram</a>
   </div>
   <p>Desenvolvido e gerenciado por: <a href="index.html">Oficina do Design</a> · Menu Digital</p>
-  <p class="cred">Fotos: Unsplash (Joshua Hoehne, Samuel Foster) · Flickr CC: cole24_, Keith Williamson, thebittenword.com, TheCulinaryGeek, Yu. Samoilov, russellstreet</p>
+  <p class="cred"><a href="cardapio-admin.html" style="color:inherit">🔐 Área do lojista</a> · Fotos: Unsplash (Joshua Hoehne, Samuel Foster) · Flickr CC: cole24_, Keith Williamson, thebittenword.com, TheCulinaryGeek, Yu. Samoilov, russellstreet</p>
 </footer>
 
 <script>
 'use strict';
-const WHATSAPP='5591981604336';
-const IG='https://www.instagram.com/oficinadodesign.oficial/';
+let WHATSAPP='5591981604336';
+let IG='https://www.instagram.com/oficinadodesign.oficial/';
 const BRData=[{"sushi":{"name":"koi sushi.","emoji":"🍣","label":"CARDÁPIO DIGITAL · COZINHA JAPONESA","title":"Um ritual de sabor.","subtitle":"Conheça uma experiência japonesa feita para despertar os sentidos. Elegância em cada detalhe.","accent":"#ff6b3d","photo":"img/sushi.jpg","kicker2":"🍣 VENHA PROVAR","items":[["Combinado Koi 20 peças",79.9,"Uma seleção especial de sushis e sashimis, montada no dia."],["Salmão Especial",35.9,"Peças de salmão com finalização delicada no blowtorch."],["Hot Roll Crocante",29.9,"O clássico enrolado com cebolinha crocante."]]},"acai":{"name":"nativo açaí.","emoji":"🍇","label":"CARDÁPIO DIGITAL · AÇAÍTERIA","title":"A energia do Norte no seu copo.","subtitle":"Açaí cremoso, generoso e montado do seu jeito. Tradição paraense com a energia da região.","accent":"#8e44d6","photo":"img/acai.jpg","kicker2":"🍇 MONTE SEU COPO","items":[["Tigela 500ml completa",24.9,"Açaí cremoso com barra de acompanhamentos à escolha."],["Copo 300ml tradicional",16.9,"O clássico que nunca decepciona — granola e banana inclusos."],["Açaí com cupuaçu",27.9,"A combinação paraense perfeita, cremosa e geladinha."]]},"burger":{"name":"BRASA.","emoji":"🔥","label":"CARDÁPIO DIGITAL · HAMBURGUERIA","title":"Fogo, fumaça e sabor.","subtitle":"Smash burgers na chapa quente, blend 100% bovino e pão brioche fresquinho.","accent":"#d35400","photo":"img/burger.jpg","kicker2":"🔥 DIRETO DA CHAPA","items":[["Smash Duplo Brasa",32.9,"Dois smashs, cheddar duplo e molho da casa na brioche."],["Costela BBQ 12h",38.9,"Costela desfiada 12 horas no bafo com cheddar e onion rings."],["Frango Crocante",27.9,"Filé empanado crocante com maionese verde da casa."]]},"pizza":{"name":"forno 51.","emoji":"🍕","label":"CARDÁPIO DIGITAL · PIZZARIA","title":"Massa artesanal, forno a lenha.","subtitle":"Fermentação natural e forno de alvenaria a lenha, no ponto certo.","accent":"#e0862c","photo":"img/pizza.jpg","kicker2":"🍕 SAINDO DO FORNO","items":[["Margherita Grão",44.9,"Molho artesanal, mussarela de búfala e manjericão fresco."],["Pepperoni Napa 51",49.9,"Pepperoni fatiado fino com bordo recheado de catupiry."],["Quatro Queijos",47.9,"Mussarela, parmesão, gouda e gorgonzola gratinados."]]},"cafe":{"name":"aurora café.","emoji":"☕","label":"SITE INSTITUCIONAL · CAFETERIA","title":"Pausa que acorda a alma.","subtitle":"Cafés de origem, assados artesanais e aquele ambiente pra ficar o dia inteiro.","accent":"#8c6d46","photo":"img/cafe.jpg","kicker2":"☕ ACORDE JUNTO","items":[["Latte Aurora",14.9,"Espresso de origem com leite vaporizado sedoso."],["Café Coado V60",12.9,"Método manual para valorizar a doçura natural do grão."],["Croissant Amêndoas",16.9,"Laminado na hora com creme de amêndoas."]]},"portal":{"name":"norte em pauta.","emoji":"📰","label":"PORTAL DE NOTÍCIAS · EDITORIAL","title":"Jornalismo na velocidade da cidade.","subtitle":"Portal de notícias completo para Castanhal e região — a cidade inteira em uma aba.","accent":"#0e7c86","photo":"img/portal.jpg","kicker2":"📰 ÚLTIMAS DA CIDADE","items":[["Plano Portal Mensal",299.9,"Portal completo com gestão editorial e domínio próprio."],["Plano Portal Anual",2999.9,"Domínio, hospedagem e suporte contínuo no plano anual."],["Publicidade no Portal",99.9,"Banners em posição estratégica por todo o portal."]]}}][0];
-const BEBIDAS=[["Refrigerante Lata 350ml",6,"Coca-Cola, Guaraná ou Fanta — sempre geladinho.","img/bebida-refri.jpg"],["Suco Natural 500ml",9.9,"Laranja, maracujá ou cupuaçu, feito na hora.","img/bebida-suco.jpg"],["Água Mineral 500ml",4,"Com ou sem gás, pra acompanhar.","img/bebida-agua.jpg"],["Limonada Suíça 500ml",12.9,"Limão batido com gelo e toque cremoso.","img/bebida-limonada.jpg"]];
-const CUPONS={'OFICINA10':0.10,'BEMVINDO5':0.05};
+let BEBIDAS=[["Refrigerante Lata 350ml",6,"Coca-Cola, Guaraná ou Fanta — sempre geladinho.","img/bebida-refri.jpg"],["Suco Natural 500ml",9.9,"Laranja, maracujá ou cupuaçu, feito na hora.","img/bebida-suco.jpg"],["Água Mineral 500ml",4,"Com ou sem gás, pra acompanhar.","img/bebida-agua.jpg"],["Limonada Suíça 500ml",12.9,"Limão batido com gelo e toque cremoso.","img/bebida-limonada.jpg"]];
+let CUPONS={'OFICINA10':0.10,'BEMVINDO5':0.05};
+const CFG=(function(){try{return JSON.parse(localStorage.getItem('sd-cardapio')||'null');}catch(e){return null;}})();
+if(CFG){
+  Object.keys(CFG.brands||{}).forEach(k=>{if(BRData[k])Object.assign(BRData[k],CFG.brands[k]);});
+  if(Array.isArray(CFG.bebidas)&&CFG.bebidas.length)BEBIDAS=CFG.bebidas;
+  if(CFG.whatsapp)WHATSAPP=CFG.whatsapp;
+  if(CFG.ig)IG=CFG.ig;
+  if(CFG.cupons)Object.keys(CFG.cupons).forEach(k=>CUPONS[k]=Number(CFG.cupons[k]));
+}
 let activeKey='sushi';
 let cart={};
 let coupon=null;
@@ -320,7 +328,7 @@ function renderMenu(){
     const d=document.createElement('div');d.className='dish';
     const crop=['0% 50%','50% 50%','100% 50%'][idx%3];
     d.innerHTML=`
-      <div class="ph"><img src="${br().photo}" alt="${it[0]}" width="512" height="512" loading="lazy" decoding="async" style="object-position:${crop}"></div>
+      <div class="ph"><img src="${br().photo}" alt="${it[0]}" width="900" height="900" loading="lazy" decoding="async" style="object-position:${crop}"></div>
       <div class="bd"><h3>${it[0]}</h3><p>${it[2]}</p>
       <div class="foot"><span class="price">${fmt(it[1])}</span>
       <div class="addqty"><button data-m="${idx}">−</button><b class="q" id="q-${idx}">0</b><button class="plus" data-p="${idx}">+</button></div></div></div>`;

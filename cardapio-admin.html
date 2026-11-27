@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Administração do Cardápio — Oficina do Design</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23ff6b3d'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='white' font-family='Georgia'%3EOD%3C/text%3E%3C/svg%3E">
+<style>
+:root{--acc:#ff6b3d;--bg:#fff8f0;--card:#fff;--ink:#2b2320;--muted:#8a7d74;--soft:#ffeee4;--ok:#1a9e56;--radius:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+img{display:block}
+button{font-family:inherit}
+
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login-card{background:var(--card);border-radius:24px;padding:34px 30px;width:100%;max-width:400px;box-shadow:0 20px 50px rgba(43,35,32,.15);text-align:center}
+.login-card .logo{width:56px;height:56px;border-radius:18px;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.3rem;margin:0 auto 14px}
+.login-card h1{font-size:1.25rem;margin-bottom:4px}
+.login-card p{color:var(--muted);font-size:.9rem;margin-bottom:20px}
+.login-card input{width:100%;padding:13px 15px;border-radius:12px;border:1.5px solid rgba(43,35,32,.15);background:#fffdfb;font-size:1rem;margin-bottom:10px}
+.login-card input:focus{outline:none;border-color:var(--acc)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;font-weight:750;font-size:.95rem;border:none;cursor:pointer;transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-acc{background:var(--acc);color:#fff;width:100%}
+.btn-ghost{background:var(--soft);color:var(--acc)}
+.link-muted{color:var(--muted);font-size:.85rem;text-decoration:none}
+
+.shell{max-width:1080px;margin:0 auto;padding:0 4% 120px}
+.admin-nav{position:sticky;top:0;z-index:20;background:rgba(255,248,240,.95);backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;padding:12px 4%;flex-wrap:wrap;border-bottom:1px solid rgba(43,35,32,.08)}
+.admin-nav .tt{font-weight:800;font-family:Georgia,serif}
+.admin-nav .sp{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;margin:18px 0 22px;flex-wrap:wrap}
+.tab{border:1.5px solid var(--acc);background:#fff;color:var(--acc);padding:8px 16px;border-radius:999px;font-weight:750;font-size:.88rem;cursor:pointer}
+.tab.active{background:var(--acc);color:#fff}
+.panel{display:none}.panel.active{display:block}
+
+.bcard{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:0 8px 24px rgba(43,35,32,.07)}
+.bcard h3{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bcard h3 .emo{width:38px;height:38px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-size:1.2rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:.8rem;color:var(--muted);font-weight:700}
+.f input,.f textarea,.f select{padding:11px 13px;border-radius:11px;border:1.5px solid rgba(43,35,32,.15);background:#fffdfb;color:var(--ink);font-size:.93rem;font-family:inherit}
+.f textarea{resize:vertical;min-height:56px}
+.f input:focus,.f textarea:focus{outline:none;border-color:var(--acc)}
+.f input[type=color]{padding:3px;height:44px;width:70px}
+.items-head{margin:18px 0 8px;font-size:.85rem;font-weight:800;color:var(--acc);letter-spacing:.06em}
+.item-row{display:grid;grid-template-columns:2fr 90px 3fr;gap:10px;margin-bottom:10px}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}.item-row{grid-template-columns:1fr 80px}.item-row .fdesc{grid-column:1/-1}}
+
+.phrow{display:flex;align-items:center;gap:14px;margin:10px 0}
+.phrow img{width:74px;height:74px;object-fit:cover;border-radius:14px;border:1.5px solid rgba(43,35,32,.1)}
+.phrow .btn{padding:9px 14px;font-size:.82rem}
+.sticky-save{position:fixed;bottom:0;left:0;right:0;background:rgba(255,248,240,.96);backdrop-filter:blur(10px);border-top:1px solid rgba(43,35,32,.08);padding:12px 4%;display:flex;gap:12px;align-items:center;z-index:30}
+.sticky-save .st{font-size:.85rem;color:var(--muted)}
+.save-main{background:var(--acc);color:#fff}
+.cupon-row{display:flex;gap:10px;align-items:end;margin-bottom:10px}
+.cupon-row .f{flex:1}
+.cupon-row .f:last-child{flex:0}
+.cupon-row .rm{background:#ffe3d9;color:#c0392b;border:none;width:40px;height:40px;border-radius:12px;font-weight:800;cursor:pointer}
+.steps{color:var(--muted);font-size:.9rem;line-height:1.7;margin:10px 0 16px;padding-left:20px}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;transition:transform .3s;z-index:60}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.danger{color:#c0392b}
+h2.sec{font-size:1.3rem;margin-bottom:4px}
+p.subsec{color:var(--muted);font-size:.92rem;margin-bottom:18px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="login-wrap" id="loginView">
+  <div class="login-card">
+    <div class="logo">OD</div>
+    <h1 id="lgTitle">Área do lojista</h1>
+    <p id="lgSub">Acesse para editar preços, pratos e fotos do cardápio.</p>
+    <input type="password" id="pw1" placeholder="Sua senha">
+    <input type="password" id="pw2" placeholder="Confirme a senha" style="display:none">
+    <button class="btn btn-acc" id="lgBtn">Entrar</button>
+    <p style="margin-top:14px;font-size:.78rem;color:var(--muted)">A senha fica salva apenas neste navegador.<br><a class="link-muted" href="cardapio-demo.html">← Ver o cardápio</a></p>
+  </div>
+</div>
+
+<div class="shell" id="adminView" style="display:none">
+  <div class="admin-nav">
+    <span class="tt">🧾 Cardápio · Administração</span>
+    <span class="sp">
+      <a class="link-muted" href="cardapio-demo.html" target="_blank">👁 Ver cardápio</a>
+      <button class="btn btn-ghost" style="padding:8px 14px;font-size:.82rem" id="btnLogout">Sair</button>
+    </span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-t="pratos">🍽️ Pratos e marcas</button>
+    <button class="tab" data-t="bebidas">🥤 Bebidas</button>
+    <button class="tab" data-t="contato">💬 Contato</button>
+    <button class="tab" data-t="cupons">🎟️ Cupons</button>
+    <button class="tab" data-t="backup">📦 Backup</button>
+    <button class="tab" data-t="senha">🔑 Senha</button>
+  </div>
+
+  <div class="panel active" id="pan-pratos">
+    <h2 class="sec">Pratos e marcas</h2>
+    <p class="subsec">Escolha a marca lá embaixo (painel de teste do cardápio) e edite tudo: nome, textos, cor, foto e os 3 pratos com preços.</p>
+    <div id="brandsBox"></div>
+  </div>
+
+  <div class="panel" id="pan-bebidas">
+    <h2 class="sec">Bebidas</h2>
+    <p class="subsec">Aparecem na seção "Bebidas geladas" do cardápio.</p>
+    <div id="bebBox"></div>
+  </div>
+
+  <div class="panel" id="pan-contato">
+    <h2 class="sec">Contato</h2>
+    <p class="subsec">Número e links usados nos botões do WhatsApp do cardápio.</p>
+    <div class="bcard">
+      <div class="f"><label>Número do WhatsApp (com 55 e DDD, só números)</label><input id="cfgWa" placeholder="5591981604336"></div>
+      <p class="subsec" style="margin:8px 0 16px">O cliente digita o número dele no pedido; este aqui é o número que RECEBE os pedidos.</p>
+      <div class="f"><label>Instagram (link completo)</label><input id="cfgIg" placeholder="https://www.instagram.com/oficinadodesign.oficial/"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="pan-cupons">
+    <h2 class="sec">Cupons de desconto</h2>
+    <p class="subsec">O cliente digita o código no carrinho e ganha o desconto. Exemplo: <b>OFICINA10</b> vale 10%.</p>
+    <div class="bcard">
+      <div id="cupBox"></div>
+      <button class="btn btn-ghost" id="cupAdd">+ Novo cupom</button>
+    </div>
+  </div>
+
+  <div class="panel" id="pan-backup">
+    <h2 class="sec">Backup e segurança</h2>
+    <p class="subsec">As alterações ficam salvas <b>neste navegador</b>. Baixe um backup para guardar ou levar para outro dispositivo.</p>
+    <div class="bcard">
+      <p class="subsec">1. Exportar: baixa um arquivo com tudo que você editou.</p>
+      <button class="btn btn-acc" id="btnExport" style="width:auto;margin-bottom:20px">⬇️ Baixar backup (.json)</button>
+      <p class="subsec">2. Importar: sobe um backup neste navegador.</p>
+      <input type="file" id="fileImport" accept=".json,application/json" style="margin-bottom:20px">
+      <p class="subsec danger">3. Cuidado: apaga todas as edições deste navegador e volta ao cardápio original.</p>
+      <button class="btn btn-ghost" id="btnReset" style="width:auto">♻️ Restaurar padrão</button>
+    </div>
+  </div>
+
+  <div class="panel" id="pan-senha">
+    <h2 class="sec">Trocar senha</h2>
+    <p class="subsec">A senha é verificada neste navegador. Em outro computador, use o mesmo backup e defina a senha de novo.</p>
+    <div class="bcard" style="max-width:420px">
+      <div class="f" style="margin-bottom:10px"><label>Senha atual</label><input type="password" id="swOld"></div>
+      <div class="f" style="margin-bottom:10px"><label>Nova senha</label><input type="password" id="swNew"></div>
+      <div class="f" style="margin-bottom:16px"><label>Confirmar nova senha</label><input type="password" id="swNew2"></div>
+      <button class="btn btn-acc" id="swBtn">Salvar nova senha</button>
+    </div>
+  </div>
+</div>
+
+<div class="sticky-save" id="saveBar" style="display:none">
+  <button class="btn btn-acc" style="width:auto" id="btnSave">💾 Salvar alterações</button>
+  <span class="st" id="saveStatus">—</span>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const DEFS=[{"sushi":{"name":"koi sushi.","emoji":"🍣","label":"CARDÁPIO DIGITAL · COZINHA JAPONESA","title":"Um ritual de sabor.","subtitle":"Conheça uma experiência japonesa feita para despertar os sentidos. Elegância em cada detalhe.","accent":"#ff6b3d","photo":"img/sushi.jpg","kicker2":"🍣 VENHA PROVAR","items":[["Combinado Koi 20 peças",79.9,"Uma seleção especial de sushis e sashimis, montada no dia."],["Salmão Especial",35.9,"Peças de salmão com finalização delicada no blowtorch."],["Hot Roll Crocante",29.9,"O clássico enrolado com cebolinha crocante."]]},"acai":{"name":"nativo açaí.","emoji":"🍇","label":"CARDÁPIO DIGITAL · AÇAÍTERIA","title":"A energia do Norte no seu copo.","subtitle":"Açaí cremoso, generoso e montado do seu jeito. Tradição paraense com a energia da região.","accent":"#8e44d6","photo":"img/acai.jpg","kicker2":"🍇 MONTE SEU COPO","items":[["Tigela 500ml completa",24.9,"Açaí cremoso com barra de acompanhamentos à escolha."],["Copo 300ml tradicional",16.9,"O clássico que nunca decepciona — granola e banana inclusos."],["Açaí com cupuaçu",27.9,"A combinação paraense perfeita, cremosa e geladinha."]]},"burger":{"name":"BRASA.","emoji":"🔥","label":"CARDÁPIO DIGITAL · HAMBURGUERIA","title":"Fogo, fumaça e sabor.","subtitle":"Smash burgers na chapa quente, blend 100% bovino e pão brioche fresquinho.","accent":"#d35400","photo":"img/burger.jpg","kicker2":"🔥 DIRETO DA CHAPA","items":[["Smash Duplo Brasa",32.9,"Dois smashs, cheddar duplo e molho da casa na brioche."],["Costela BBQ 12h",38.9,"Costela desfiada 12 horas no bafo com cheddar e onion rings."],["Frango Crocante",27.9,"Filé empanado crocante com maionese verde da casa."]]},"pizza":{"name":"forno 51.","emoji":"🍕","label":"CARDÁPIO DIGITAL · PIZZARIA","title":"Massa artesanal, forno a lenha.","subtitle":"Fermentação natural e forno de alvenaria a lenha, no ponto certo.","accent":"#e0862c","photo":"img/pizza.jpg","kicker2":"🍕 SAINDO DO FORNO","items":[["Margherita Grão",44.9,"Molho artesanal, mussarela de búfala e manjericão fresco."],["Pepperoni Napa 51",49.9,"Pepperoni fatiado fino com bordo recheado de catupiry."],["Quatro Queijos",47.9,"Mussarela, parmesão, gouda e gorgonzola gratinados."]]},"cafe":{"name":"aurora café.","emoji":"☕","label":"SITE INSTITUCIONAL · CAFETERIA","title":"Pausa que acorda a alma.","subtitle":"Cafés de origem, assados artesanais e aquele ambiente pra ficar o dia inteiro.","accent":"#8c6d46","photo":"img/cafe.jpg","kicker2":"☕ ACORDE JUNTO","items":[["Latte Aurora",14.9,"Espresso de origem com leite vaporizado sedoso."],["Café Coado V60",12.9,"Método manual para valorizar a doçura natural do grão."],["Croissant Amêndoas",16.9,"Laminado na hora com creme de amêndoas."]]},"portal":{"name":"norte em pauta.","emoji":"📰","label":"PORTAL DE NOTÍCIAS · EDITORIAL","title":"Jornalismo na velocidade da cidade.","subtitle":"Portal de notícias completo para Castanhal e região — a cidade inteira em uma aba.","accent":"#0e7c86","photo":"img/portal.jpg","kicker2":"📰 ÚLTIMAS DA CIDADE","items":[["Plano Portal Mensal",299.9,"Portal completo com gestão editorial e domínio próprio."],["Plano Portal Anual",2999.9,"Domínio, hospedagem e suporte contínuo no plano anual."],["Publicidade no Portal",99.9,"Banners em posição estratégica por todo o portal."]]}}][0];
+const DEF_BEBIDAS=[["Refrigerante Lata 350ml",6,"Coca-Cola, Guaraná ou Fanta — sempre geladinho.","img/bebida-refri.jpg"],["Suco Natural 500ml",9.9,"Laranja, maracujá ou cupuaçu, feito na hora.","img/bebida-suco.jpg"],["Água Mineral 500ml",4,"Com ou sem gás, pra acompanhar.","img/bebida-agua.jpg"],["Limonada Suíça 500ml",12.9,"Limão batido com gelo e toque cremoso.","img/bebida-limonada.jpg"]];
+const CFG_KEY='sd-cardapio';
+const HASH_KEY='sd-admin-hash';
+const SESSION_KEY='sd-admin-session';
+
+let cfg=null;
+let dirty=false;
+
+function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+function markDirty(){dirty=true;document.getElementById('saveStatus').textContent='● alterações não salvas';}
+
+async function sha256(txt){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(txt));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function defaults(){
+  const b=JSON.parse(JSON.stringify(DEFS));
+  return {v:1,brands:b,bebidas:DEF_BEBIDAS.map(x=>x.slice()),whatsapp:'5591981604336',ig:'https://www.instagram.com/oficinadodesign.oficial/',cupons:{OFICINA10:0.10,BEMVINDO5:0.05}};
+}
+function load(){
+  try{const c=JSON.parse(localStorage.getItem(CFG_KEY));if(c&&c.brands)return Object.assign(defaults(),c);}catch(e){}
+  return defaults();
+}
+function save(){
+  localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
+  dirty=false;
+  document.getElementById('saveStatus').textContent='✓ salvo às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  toast('Salvo! Abra o cardápio para conferir.');
+}
+
+/* ---- login ---- */
+async function tryLogin(){
+  const p1=document.getElementById('pw1'),p2=document.getElementById('pw2'),btn=document.getElementById('lgBtn');
+  const hash=localStorage.getItem(HASH_KEY);
+  const val=p1.value;
+  if(!val){alert('Digite a senha.');return;}
+  if(!hash){
+    if(val.length<4){alert('A senha precisa ter pelo menos 4 caracteres.');return;}
+    if(val!==p2.value){alert('As duas senhas não conferem.');return;}
+    localStorage.setItem(HASH_KEY,await sha256(val));
+    enter();
+    return;
+  }
+  if(await sha256(val)===hash){enter();return;}
+  alert('Senha incorreta.');
+  p1.value='';
+}
+function enter(){
+  sessionStorage.setItem(SESSION_KEY,'1');
+  document.getElementById('loginView').style.display='none';
+  document.getElementById('adminView').style.display='';
+  document.getElementById('saveBar').style.display='flex';
+  bootAdmin();
+}
+function logout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+/* ---- render marcas ---- */
+function bootAdmin(){
+  cfg=load();
+  const box=document.getElementById('brandsBox');box.innerHTML='';
+  Object.keys(cfg.brands).forEach(k=>{
+    const b=cfg.brands[k];
+    const d=document.createElement('div');d.className='bcard';
+    d.innerHTML=`
+      <h3><span class="emo">${esc(b.emoji||'🍽️')}</span> ${esc(b.name)}</h3>
+      <div class="grid2">
+        <div class="f"><label>Nome exibido</label><input data-p="brands.${k}.name" value="${esc(b.name)}"></div>
+        <div class="f"><label>Linha pequena (ex.: CARDÁPIO DIGITAL · COZINHA JAPONESA)</label><input data-p="brands.${k}.label" value="${esc(b.label)}"></div>
+        <div class="f"><label>Título grande (hero)</label><input data-p="brands.${k}.title" value="${esc(b.title)}"></div>
+        <div class="f"><label>Frase de apoio (hero)</label><input data-p="brands.${k}.subtitle" value="${esc(b.subtitle)}"></div>
+      </div>
+      <div class="grid3" style="margin-top:12px;align-items:end">
+        <div class="phrow">
+          <img id="ph-${k}" src="${esc(b.photo)}" alt="Foto da marca ${esc(b.name)}">
+          <div>
+            <button class="btn btn-ghost" data-uph="${k}">📸 Trocar foto</button>
+            <input type="file" accept="image/*" id="up-${k}" style="display:none">
+          </div>
+        </div>
+        <div class="f"><label>Cor da marca</label><input type="color" data-p="brands.${k}.accent" value="${esc(b.accent||'#ff6b3d')}"></div>
+      </div>
+      <div class="items-head">PRATOS DESTAQUE (3)</div>
+      <div id="items-${k}"></div>`;
+    box.appendChild(d);
+    const ib=d.querySelector('#items-'+k);
+    b.items.forEach((it,idx)=>{
+      const row=document.createElement('div');row.className='item-row';
+      row.innerHTML=`
+        <div class="f"><label>Prato ${idx+1} — nome</label><input data-item="${k}.${idx}.0" value="${esc(it[0])}"></div>
+        <div class="f"><label>Preço R$</label><input type="number" step="0.01" min="0" data-item="${k}.${idx}.1" value="${esc(it[1])}"></div>
+        <div class="f fdesc"><label>Descrição</label><input data-item="${k}.${idx}.2" value="${esc(it[2])}"></div>`;
+      ib.appendChild(row);
+    });
+  });
+
+  /* bebidas */
+  const bb=document.getElementById('bebBox');bb.innerHTML='';
+  cfg.bebidas.forEach((it,idx)=>{
+    const d=document.createElement('div');d.className='bcard';
+    d.innerHTML=`
+      <div class="item-row">
+        <div class="f"><label>Bebida ${idx+1} — nome</label><input data-beb="${idx}.0" value="${esc(it[0])}"></div>
+        <div class="f"><label>Preço R$</label><input type="number" step="0.01" min="0" data-beb="${idx}.1" value="${esc(it[1])}"></div>
+        <div class="f fdesc"><label>Descrição</label><input data-beb="${idx}.2" value="${esc(it[2])}"></div>
+      </div>
+      <div class="phrow">
+        <img id="bph-${idx}" src="${esc(it[3]||'')}" alt="Foto da bebida ${idx+1}" onerror="this.style.opacity=.2">
+        <div>
+          <button class="btn btn-ghost" data-uphb="${idx}">📸 Trocar foto</button>
+          <input type="file" accept="image/*" id="bup-${idx}" style="display:none">
+        </div>
+      </div>`;
+    bb.appendChild(d);
+  });
+
+  /* contato */
+  document.getElementById('cfgWa').value=cfg.whatsapp||'';
+  document.getElementById('cfgIg').value=cfg.ig||'';
+
+  /* cupons */
+  renderCupons();
+
+  /* listeners */
+  document.querySelectorAll('[data-p]').forEach(el=>{
+    el.addEventListener('input',()=>{
+      const path=el.dataset.p.split('.');
+      let o=cfg;for(let i=0;i<path.length-1;i++)o=o[path[i]];
+      o[path[path.length-1]]=el.value;
+      markDirty();
+    });
+  });
+  document.querySelectorAll('[data-item]').forEach(el=>{
+    el.addEventListener('input',()=>{
+      const [k,idx,f]=el.dataset.item.split('.');
+      cfg.brands[k].items[Number(idx)][Number(f)]=(f==='1')?Number(el.value||0):el.value;
+      markDirty();
+    });
+  });
+  document.querySelectorAll('[data-beb]').forEach(el=>{
+    el.addEventListener('input',()=>{
+      const [idx,f]=el.dataset.beb.split('.');
+      cfg.bebidas[Number(idx)][Number(f)]=(f==='1')?Number(el.value||0):el.value;
+      markDirty();
+    });
+  });
+  document.querySelectorAll('[data-uph]').forEach(el=>el.addEventListener('click',()=>document.getElementById('up-'+el.dataset.uph).click()));
+  document.querySelectorAll('[data-uphb]').forEach(el=>el.addEventListener('click',()=>document.getElementById('bup-'+el.dataset.uphb).click()));
+  Object.keys(cfg.brands).forEach(k=>{
+    const inp=document.getElementById('up-'+k);
+    inp.addEventListener('change',()=>{if(inp.files[0])uploadPhoto(inp.files[0],url=>{cfg.brands[k].photo=url;document.getElementById('ph-'+k).src=url;markDirty();});});
+  });
+  cfg.bebidas.forEach((it,idx)=>{
+    const inp=document.getElementById('bup-'+idx);
+    inp.addEventListener('change',()=>{if(inp.files[0])uploadPhoto(inp.files[0],url=>{cfg.bebidas[idx][3]=url;document.getElementById('bph-'+idx).src=url;document.getElementById('bph-'+idx).style.opacity=1;markDirty();});});
+  });
+
+  document.getElementById('cfgWa').addEventListener('input',e=>{cfg.whatsapp=e.target.value.replace(/\D/g,'');markDirty();});
+  document.getElementById('cfgIg').addEventListener('input',e=>{cfg.ig=e.target.value.trim();markDirty();});
+}
+
+/* ---- fotos ---- */
+function uploadPhoto(file,cb){
+  if(file.size>8*1024*1024){alert('Imagem muito grande (máx. 8 MB).');return;}
+  const rd=new FileReader();
+  rd.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=900;
+      let w=img.width,h=img.height;
+      const m=Math.min(w,h);
+      const cv=document.createElement('canvas');
+      cv.width=max;cv.height=max;
+      const cx=cv.getContext('2d');
+      const cv2=document.createElement('canvas');
+      cv2.width=max;cv2.height=max;
+      const cx2=cv2.getContext('2d');
+      const side=Math.min(w,h);
+      cx2.drawImage(img,(w-side)/2,(h-side)/2,side,side,0,0,max,max);
+      const url=cv2.toDataURL('image/jpeg',0.82);
+      cb(url);
+      toast('Foto carregada! Clique em Salvar.');
+    };
+    img.src=e.target.result;
+  };
+  rd.readAsDataURL(file);
+}
+
+/* ---- cupons ---- */
+function renderCupons(){
+  const box=document.getElementById('cupBox');box.innerHTML='';
+  Object.keys(cfg.cupons).forEach(code=>{
+    const row=document.createElement('div');row.className='cupon-row';
+    row.innerHTML=`
+      <div class="f"><label>Código</label><input data-cup="${code}" data-f="code" value="${esc(code)}"></div>
+      <div class="f"><label>Desconto %</label><input type="number" min="1" max="90" data-cup="${code}" data-f="off" value="${Math.round(cfg.cupons[code]*100)}"></div>
+      <button class="rm" data-cuprm="${code}" title="Remover">✕</button>`;
+    box.appendChild(row);
+  });
+  box.querySelectorAll('[data-cup]').forEach(el=>{
+    el.addEventListener('change',()=>{
+      const old=el.dataset.cup;
+      if(el.dataset.f==='code'){
+        const nc=el.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+        if(!nc||nc===old){renderCupons();return;}
+        cfg.cupons[nc]=cfg.cupons[old];delete cfg.cupons[old];
+      }else{
+        cfg.cupons[old]=Math.min(90,Math.max(1,Number(el.value||10)))/100;
+      }
+      markDirty();renderCupons();
+    });
+  });
+  box.querySelectorAll('[data-cuprm]').forEach(el=>{
+    el.addEventListener('click',()=>{delete cfg.cupons[el.dataset.cuprm];markDirty();renderCupons();});
+  });
+}
+document.getElementById('cupAdd').addEventListener('click',()=>{
+  const codes=Object.keys(cfg.cupons);let n=1;
+  while(codes.includes('CUPOM'+n))n++;
+  cfg.cupons['CUPOM'+n]=0.10;markDirty();renderCupons();
+});
+
+/* ---- backup ---- */
+document.getElementById('btnExport').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify(cfg,null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='cardapio-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+document.getElementById('fileImport').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=async ev=>{
+    try{
+      const c=JSON.parse(ev.target.result);
+      if(!c.brands)throw new Error('sem brands');
+      cfg=Object.assign(defaults(),c);
+      localStorage.setItem(CFG_KEY,JSON.stringify(cfg));
+      dirty=false;document.getElementById('saveStatus').textContent='✓ importado';
+      bootAdmin();toast('Backup importado!');
+    }catch(err){alert('Arquivo inválido: '+err.message);}
+  };
+  rd.readAsText(f);
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  if(!confirm('Apagar TODAS as edições deste navegador e voltar ao cardápio original?'))return;
+  localStorage.removeItem(CFG_KEY);
+  cfg=defaults();bootAdmin();markDirty();
+  toast('Restaurado ao padrão — lembre de salvar.');
+});
+
+/* ---- senha ---- */
+document.getElementById('swBtn').addEventListener('click',async()=>{
+  const old=document.getElementById('swOld').value,nw=document.getElementById('swNew').value,nw2=document.getElementById('swNew2').value;
+  const hash=localStorage.getItem(HASH_KEY);
+  if(!hash||await sha256(old)!==hash){alert('Senha atual incorreta.');return;}
+  if(nw.length<4){alert('A nova senha precisa ter pelo menos 4 caracteres.');return;}
+  if(nw!==nw2){alert('As novas senhas não conferem.');return;}
+  localStorage.setItem(HASH_KEY,await sha256(nw));
+  document.getElementById('swOld').value='';document.getElementById('swNew').value='';document.getElementById('swNew2').value='';
+  toast('Senha alterada!');
+});
+
+/* ---- abas / geral ---- */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('pan-'+t.dataset.t).classList.add('active');
+}));
+document.getElementById('btnSave').addEventListener('click',save);
+document.getElementById('btnLogout').addEventListener('click',logout);
+document.getElementById('lgBtn').addEventListener('click',tryLogin);
+document.getElementById('pw1').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+document.getElementById('pw2').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin();});
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+
+(async function init(){
+  const hash=localStorage.getItem(HASH_KEY);
+  if(!hash){
+    document.getElementById('lgTitle').textContent='Criar sua senha';
+    document.getElementById('lgSub').textContent='Primeiro acesso: escolha uma senha para proteger esta área.';
+    document.getElementById('pw2').style.display='';
+    document.getElementById('lgBtn').textContent='Criar senha e entrar';
+  }
+  if(sessionStorage.getItem(SESSION_KEY)==='1'){
+    document.getElementById('loginView').style.display='none';
+    document.getElementById('adminView').style.display='';
+    document.getElementById('saveBar').style.display='flex';
+    bootAdmin();
+  }
+})();
+</script>
+</body>
+</html>
